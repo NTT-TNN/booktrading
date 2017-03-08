@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Books Trading Club</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+</head>
+
+  </head>
+  <style type="text/css">
+      .main_menu>ul>li{
+          text-decoration: none;
+          list-style: none;
+          float:left;
+
+      }
+      .main_menu{
+        background: #DDDDDD;
+        padding-bottom: 5px;
+        height: 40px;
+        margin-top: 5px;
+      }
+      .location{
+        width: 400px;
+        height: 30px;
+      }
+      .footer {
+          margin-top: 20px;
+          padding-top: 19px;
+          color: #777;
+          border-top: 1px solid #e5e5e5;
+      }
+      .close1{
+        color:red;
+      }
+      .myBooks>ul>li{
+        list-style: none;
+        float:left;
+        position: relative;
+        padding: 5px 5px;
+      }
+         .close {
+    float: none;
+    vertical-align: top;
+    margin-left: -20px;
+    color: #dc143c;
+    opacity: .5;
+}
+      button.close {
+        -webkit-appearance: none;
+        padding: 0;
+        cursor: pointer;
+        background: 0 0;
+        border: 0;
+      }
+      .close{
+        float: right;
+        font-size: 21px;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        filter: alpha(opacity=20);
+        opacity: .2;
+      }
+      .remove{
+        float:right;
+      }
+  </style>
+  <body>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <div class="col-md-10 col-md-offset-1"   ng-app="allBooksApp" ng-controller="allBooks">
+      <nav class="navbar navbar-default" style="background-color:white">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <b class="active"><a class="navbar-brand" href="/">Books Trading Club</a></b>
+
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+            <%if(login == false){%>
+              <li><a href="/users/login">Login</a></li>
+              <li><a href="/users/signup">Sign up</a></li>
+              
+              <%}else{%>
+              <li><a href="/allBook">All Books</a></li>
+              <li><a href="/myBook">My Books</a></li>
+              <li><a href="/users/profile"><i class="gly glyphicon glyphicon-cog"></i></a></li>
+              <li><a href="/users/logout">Log out</a></li>
+              <%}%>
+            </ul>
+          </div>
+        </div>
+      </nav>
+       <div class="row col-md-offset-1" >
+        <button class="btn btn-success" style="margin-right: 10px;" ng-click="myTrad()">Your trade requests</button>
+        <button class="btn btn-info" ng-click="tradToMe()">Trade request for you</button>
+        
+          <div class="myBooks">
+                <ul class="nav nav-tabs nav-stacked ">
+                  <li class="col-md-4 col-lg-4 col-sm-6" ng-repeat="a in Trads">
+                      
+                        <a ng-click="addBooks(a._id,a.title)" style="">{{a.title}}
+                        <label class="remove" ng-click="dele(a._id)" ><i class="glyphicon glyphicon-remove"></i></label>
+                      </a>
+                  
+                  </li>  
+                </ul>
+          </div>      
+      </div>
+  
+          <label><h1 class=""> All Books: </h1></label><hr>
+          <div>
+            <div class="myBooks">
+                <ul>
+                  <li class="cover" ng-repeat="x in allBooks">
+                      <div style="height:250px">
+                      <button type="button" class="close del btn btn-info" ng-click="trad(x._id)"><i class="glyphicon glyphicon-ok"></i></button>
+                        <img src={{x.thumbnail}}></br>
+                        
+                      </div>
+                  </li>  
+                </ul>
+          </div>
+      </div>    
+          
+      </div>
+      <div class="footer col-md-10 col-md-offset-1">
+            <p>&copy; 2016 Book Trading Club</p>
+          </div> 
+   </div>
+     <script type="text/javascript">
+     var app = angular.module("allBooksApp",[]);
+     app.controller("allBooks",function($scope,$http){
+        $http.get("allBooks").then(function(result) {
+          $scope.allBooks = result.data;
+          console.log(result.data);
+        });  
+        $scope.trad = function(id){
+          console.log(id);
+          $http({
+            method : "POST",
+            url: "/tradBooks",
+            data: {id: id},
+            headers: {'Content-Type': 'application/json'}
+          })
+        };
+        $scope.myTrad = function(){
+          console.log();
+          $http({
+            method : "GET",
+            url: "/myTrad",
+            data: {},
+            headers: {'Content-Type': 'application/json'}
+          }).then(function(data){
+            $scope.Trads = data.data;
+          })
+        };
+        $scope.dele = function(id){
+          console.log(id);
+          $http({
+            method : "DELETE",
+            url: "/delMyTrads",
+            data: {id: id},
+            headers: {'Content-Type': 'application/json'}
+          }).then(function(data){
+            $scope.Trads = data.data;
+          })
+        };
+        $scope.addBooks = function(id,title){
+          console.log(id);
+          console.log(title);
+          $http({
+            method : "DELETE",
+            url: "/addBooks",
+            data: {id:id,title:title},
+            headers: {'Content-Type': 'application/json'}
+          }).then(function(data){
+            $scope.myBooks = data.data;
+          })
+        };
+     })
+  
+
+       
+    </script>
+  </body>   
+</html>

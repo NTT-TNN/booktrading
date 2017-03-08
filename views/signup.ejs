@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Books Trading Club</title>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+
+  </head>
+  <style type="text/css">
+  </style>
+  <body>
+  <div class="col-sm-4 col-sm-offset-4">
+
+      <div class="text-center">
+        <h1><span class="fa fa-sign-in"></span> Signup</h1>
+        <hr>
+         <form action="/users/signup" method="post" name="signupForm" ng-app="">
+         <div class="form-group">   
+              <label>Email</label>  
+               <span ng-show="signupForm.email.$error.email">
+                 <div class="alert-danger" style="margin-bottom: 10px;"> Not a valid e-mail address</div>
+              </span>     
+               <input type="email" name="email" class="form-control" ng-model="text" placeholder="email"/>
+               
+        </div>
+        <div class="form-group">
+            <label>PassWord</label>
+            <input type="password" class="form-control" name="password" placeholder="password"/>
+        </div>
+            <button class="btn btn-info">Sign up</button>
+            <hr>
+            <p class="message">Have account ? <a href="/users/login">Login</a></p>
+            <p><a href="/">Home</a></p>
+    </form>
+      </div>
+      <hr>
+    </div>
+     <script type="text/javascript">
+     </script>
+  </body>
+  
+    
+</html>
